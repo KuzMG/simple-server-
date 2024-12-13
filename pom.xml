@@ -8,7 +8,7 @@
 		<version>3.0.1-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>ru.Kuznetsov</groupId>
+	<groupId>ru.Tibilov</groupId>
 	<artifactId>Task3</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Task3</name>
