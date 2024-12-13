@@ -1,0 +1,371 @@
+openapi: 3.0.3
+info:
+  title: ServerSharedCard
+  version: 1.0.0
+servers:
+  - url: https://192.168.49.130:8081
+paths:
+  /authentication:
+    get:
+      tags:
+        - sign
+      summary: Авторозация пользователя
+      parameters:
+        - name: login
+          in: query
+          description: Логин пользователя
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Пароль пользователя
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Авторизация прошла успешна
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth'
+        '400':
+          description: аутентификация не прошла
+  /registration:
+    post:
+      tags:
+        - sign
+      summary: Регистрация пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      responses:
+        '200':
+          description: Регистрация прошла успешна
+        '400':
+          description: Ошибка регистрации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /verification:
+    get:
+      tags:
+        - sign
+      summary: Верификация пользователя
+      parameters:
+        - name: login
+          in: query
+          description: Логин пользователя
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Пароль пользователя
+          required: false
+          schema:
+            type: string
+        - name: code
+          in: query
+          description: Код подтверждения
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Верификация прошла успешна
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth'
+        '400':
+          description: Верификация не прошла
+  /dictionary:
+    get:
+      tags:
+        - sign
+      summary: Получение словарей
+      parameters:
+        - name: id-user
+          in: header
+          description: id пользователя
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: password-user
+          in: header
+          description: Пароль пользователя
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Получение словарей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dictionary'
+        '400':
+          description: Логин и пароль не подходят
+components:
+  schemas:
+    Shop:
+      required:
+        - id
+        - name
+        - name_en
+        - status
+      type: object
+      properties:
+        id:
+          type: number
+          format: int
+        name:
+          type: string
+        name_en:
+          type: string
+        status:
+          type: boolean
+    RecipeProduct:
+      required:
+        - id_product
+        - id_recipe
+        - id_metric
+        - count
+      type: object
+      properties:
+        id_product:
+          type: number
+          format: int
+        id_recipe:
+          type: number
+          format: int
+        id_metric:
+          type: number
+          format: int
+        count:
+          type: number
+          format: int
+    Recipe:
+      required:
+        - id
+        - name
+        - name_en
+        - description
+        - id_category
+        - pic
+        - portion
+        - fat
+        - protein
+        - carb
+        - calories
+      type: object
+      properties:
+        id:
+          type: number
+          format: int
+        name:
+          type: string
+        name_en:
+          type: string
+        id_category:
+          type: number
+          format: int
+        pic:
+          type: string
+        description:
+          type: string
+        portion:
+          type: number
+          format: int
+        fat:
+          type: number
+          format: double
+        protein:
+          type: number
+          format: double
+        carb:
+          type: number
+          format: double
+        calories:
+          type: number
+          format: int
+    Product:
+      required:
+        - id
+        - name
+        - name_en
+        - id_category
+        - pic
+        - fat
+        - protein
+        - carb
+        - calories
+      type: object
+      properties:
+        id:
+          type: number
+          format: int
+        name:
+          type: string
+        name_en:
+          type: string
+        id_category:
+          type: number
+          format: int
+        pic:
+          type: string
+        fat:
+          type: number
+          format: double
+        protein:
+          type: number
+          format: double
+        carb:
+          type: number
+          format: double
+        calories:
+          type: number
+          format: int
+    Metric:
+      required:
+        - id
+        - name
+        - name_en
+      type: object
+      properties:
+        id:
+          type: number
+          format: int
+        name:
+          type: string
+        name_en:
+          type: string
+    Currency:
+      required:
+        - id
+        - name
+        - name_en
+        - symbol
+      type: object
+      properties:
+        id:
+          type: number
+          format: int
+        name:
+          type: string
+        name_en:
+          type: string
+        symbol:
+          type: string
+    Category:
+      required:
+        - id
+        - name
+        - name_en
+        - type
+        - pic
+        - color
+      type: object
+      properties:
+        id:
+          type: number
+          format: int
+        name:
+          type: string
+        name_en:
+          type: string
+        type:
+          type: number
+          format: int
+        pic:
+          type: string
+        color:
+          type: string
+    Auth:
+      required:
+        - id_user
+        - id_group
+      type: object
+      properties:
+        id_user:
+          type: string
+          format: uuid
+        id_group:
+          type: string
+          format: uuid
+    Error:
+      type: string
+      description: Описание ошибки
+    Register:
+      required:
+        - email
+        - password
+        - name
+        - date
+        - gender
+        - weight
+        - height
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        date:
+          type: number
+          format: int64
+        gender:
+          type: boolean
+        weight:
+          type: number
+          format: double
+        height:
+          type: number
+    Dictionary:
+      required:
+        - categories
+        - currencies
+        - metrics
+        - products
+        - recipes
+        - recipeProducts
+        - shops
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        currencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Currency'
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metric'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        recipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+        recipeProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipeProduct'
+        shops:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shop'
