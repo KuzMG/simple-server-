@@ -13,7 +13,7 @@ pipeline {
             }
         }
         stage('docker-compose start') {
-           agent { node { label 'node1' } }
+           agent { node { label 'node2' } }
       	   steps {
        		sh 'docker compose up --build'
       	    }
