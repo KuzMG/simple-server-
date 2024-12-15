@@ -1,4 +1,6 @@
 package ru.Tibilov.Service;
+import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.Tibilov.DTO.NewOfferParameters;
@@ -7,6 +9,8 @@ import ru.Tibilov.Repository.*;
 import ru.Tibilov.modelTask1.*;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.atomic.DoubleAccumulator;
+
 @Service
 public class MainService {
     @Autowired
@@ -19,6 +23,15 @@ public class MainService {
     private OfficeR officeR;
     @Autowired
     private PositionR positionR;
+
+    private DoubleAccumulator metricClient;
+    @Autowired
+    private MeterRegistry metricRegistry;
+    @PostConstruct
+    private void init(){
+        metricClient = new DoubleAccumulator((x,y) -> y,0.0d);
+        metricRegistry.gauge("metric_client",metricClient);
+    }
     public List<Stuff> getAllStuff(){
         return (List<Stuff>) stuffR.findAll();
     }
@@ -31,6 +44,7 @@ public class MainService {
         return (List<Client>) clientR.findAll();
     }
     public Client getClientById(UUID id){
+        metricClient.accumulate(metricClient.get()+ 1.0);
         return clientR.findById(id).get();
     }
 
