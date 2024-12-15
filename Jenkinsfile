@@ -5,7 +5,7 @@ pipeline {
     }
     stages {
         stage('build') {
-            agent { node { label 'node2' } }
+            agent { node { label 'node1' } }
             steps {
                withMaven(maven: 'MAVEN_ENV') {
                     sh 'mvn ${MAVEN_ARGS}'
