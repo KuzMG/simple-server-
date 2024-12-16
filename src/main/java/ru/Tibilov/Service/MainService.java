@@ -23,14 +23,17 @@ public class MainService {
     private OfficeR officeR;
     @Autowired
     private PositionR positionR;
-
+    private DoubleAccumulator officeClient;
     private DoubleAccumulator metricClient;
     @Autowired
     private MeterRegistry metricRegistry;
     @PostConstruct
     private void init(){
         metricClient = new DoubleAccumulator((x,y) -> y,0.0d);
+        officeClient = new DoubleAccumulator((x,y) -> y,0.0d);
         metricRegistry.gauge("metric_client",metricClient);
+        metricRegistry.gauge("metric_office",officeClient);
+
     }
     public List<Stuff> getAllStuff(){
         return (List<Stuff>) stuffR.findAll();
@@ -60,6 +63,7 @@ public class MainService {
         return (List<Office>) officeR.findAll();
     }
     public Office getOfficeById(UUID id){
+        officeClient.accumulate(officeClient.get()+ 1.0);
         return officeR.findById(id).get();
     }
 
